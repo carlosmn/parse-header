@@ -14,4 +14,11 @@ contents.gsub! /GIT_BEGIN_DECL/, ''
 contents.gsub! /GIT_END_DECL/, ''
 #contents.strip!
 #p contents
-pp parser.parse contents
+begin
+  parsed = parser.parse contents
+rescue Parslet::ParseFailed => error
+  puts error, parser.root.error_tree
+end
+pp parsed
+line, col = parsed[3][:doc_comment].line_and_column
+puts "line and stuff #{line},#{col}"
