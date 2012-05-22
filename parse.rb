@@ -3,7 +3,7 @@
 require './parser'
 require 'pp'
 
-file = open('test.h')
+file = open('diff.h')
 contents = file.read()
 parser = Parser.new
 # Get rid of preprocessor directives

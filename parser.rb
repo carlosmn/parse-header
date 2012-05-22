@@ -48,7 +48,8 @@ class Parser < Parslet::Parser
   }
 
   rule (:enum_declaration) {
-    (str('enum') >> spaces? >> identifier.maybe >> spaces? >> left_brace >> enum_list.as(:values) >> right_brace).as(:enum)
+    (str('enum') >> spaces? >> identifier.maybe >> spaces? >> left_brace >> enum_list.as(:values) >> right_brace).as(:enum) |
+    (str('enum') >> spaces? >> identifier).as(:enum)
   }
 
   rule(:enum_entry) {
@@ -60,11 +61,16 @@ class Parser < Parslet::Parser
   }
 
   rule (:struct_declaration) {
-    (str('struct') >> spaces? >> identifier.maybe >> spaces? >> left_brace >> struct_list.as(:values) >> right_brace).as(:struct)
+    (str('struct') >> spaces? >> identifier.maybe >> spaces? >> left_brace >> struct_list.as(:values) >> right_brace).as(:struct) |
+    (str('struct') >> spaces? >> identifier).as(:struct)
+  }
+
+  rule(:struct_entry) {
+    variable_declaration >> semicolon
   }
 
   rule (:struct_list) {
-    (variable_declaration >> semicolon >> comment.maybe).repeat
+    (struct_entry >> comment.maybe).repeat
   }
 
   rule(:variable_declaration) {

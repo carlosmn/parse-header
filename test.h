@@ -25,3 +25,5 @@ struct string {
 typedef struct {
 	int8_t this;
 } something ;
+
+typedef enum a b_t;
