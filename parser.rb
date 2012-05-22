@@ -60,7 +60,7 @@ class Parser < Parslet::Parser
   }
 
   rule(:variable_declaration) {
-    identifier.as(:type) >> identifier >> (assign >> (semicolon.absent? >> any).repeat.as(:value)).maybe
+    identifier.as(:type) >> str('*').maybe.as(:pointer) >> identifier >> (assign >> (semicolon.absent? >> any).repeat.as(:value)).maybe
   }
 
   rule(:type_declaration) {
