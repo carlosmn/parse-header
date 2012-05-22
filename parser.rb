@@ -59,6 +59,18 @@ class Parser < Parslet::Parser
     (enum_entry >> comma.maybe >> spaces?).repeat
   }
 
+  rule (:struct_declaration) {
+    (str('struct') >> spaces? >> identifier.maybe >> spaces? >> left_brace >> struct_list.as(:values) >> right_brace).as(:struct)
+  }
+
+  rule(:struct_entry) {
+    variable_declaration #>> (assign >> ((match('[,}]').absent? >> any).repeat).as(:value)).maybe
+  }
+
+  rule (:struct_list) {
+    (struct_entry >> semicolon).repeat
+  }
+
   rule(:variable_declaration) {
     identifier.as(:type) >> str('*').maybe.as(:pointer) >> identifier >> (assign >> (semicolon.absent? >> any).repeat.as(:value)).maybe
   }
@@ -66,6 +78,7 @@ class Parser < Parslet::Parser
   rule(:type_declaration) {
     typedef_declaration |
     enum_declaration |
+    struct_declaration |
     identifier
   }
 
