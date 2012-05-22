@@ -56,7 +56,7 @@ class Parser < Parslet::Parser
   }
 
   rule (:enum_list) {
-    enum_entry >> (comma >> spaces? >> enum_entry).repeat
+    (enum_entry >> comma.maybe >> spaces?).repeat
   }
 
   rule(:type_declaration) {
