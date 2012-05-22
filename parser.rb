@@ -16,14 +16,63 @@ class Parser < Parslet::Parser
 
   rule(:semicolon) { match('[\s*;\s*]') }
   rule(:equals) { spaces? >> str('=') >> spaces?}
-  rule(:comma) { spaces? >> str(',') >> spaces? }
+#  rule(:comma) { spaces? >> str(',') >> spaces? }
   rule(:left_brace) { spaces? >> str('{') >> spaces? }
   rule(:right_brace) { spaces? >> str('}') >> spaces? }
+
+  def self.symbols(symbols)
+    symbols.each do |name,symbol|
+      rule(name) { spaces? >> str(symbol) >> spaces? }
+    end
+  end
+
+  symbols :ellipsis => '...',
+#  :semicolon => ';',
+  :comma => ',',
+  :colon => ':',
+  :left_paren => '(',
+  :right_paren => ')',
+  :member_access => '.',
+  :question_mark => '?'
+
+  rule(:constant_expression) { conditional_expression }
+  rule(:constant_expression?) { constant_expression.maybe }
+
+  rule(:logical_and_expression) {
+    (
+     inclusive_or_expression.as(:left) >>
+     logical_and >>
+     logical_and_expression.as(:right)
+     ).as(:logical_and) | inclusive_or_expression
+  }
+
+  rule(:logical_or_expression) {
+    (
+     logical_and_expression.as(:left) >>
+     logical_or >>
+     logical_or_expression.as(:right)
+     ).as(:logical_or) | logical_and_expression
+  }
+
+  rule(:conditional_expression) {
+    (
+     logical_or_expression.as(:condition) >> question_mark >>
+     expression.as(:true) >> colon >>
+     conditional_expression.as(:false)
+     ).as(:conditional) | logical_or_expression
+  }
+
+  rule(:assignment_expression) {
+    (
+     unary_expression.as(:left) >>
+     assignment_operator >>
+     assignment_expression.as(:right)
+     ).as(:assign) | conditional_expression
+  }
 
   rule(:identifier) {
     (alpha >> (alpha | digit).repeat).as(:identifier) >> spaces?
   }
-
 
   rule(:comment) {
     (str('/**') >> (str('*/').absent? >> any).repeat >> str('*/')).as(:doc_comment) >> spaces? |
