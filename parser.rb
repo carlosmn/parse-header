@@ -15,6 +15,8 @@ class Parser < Parslet::Parser
   rule(:xdigit) { digit | match('[a-fA-F]') }
 
   rule(:semicolon) { match('[\s*;\s*]') }
+  rule(:equals) {str('=')}
+  rule(:comma) { spaces? >> str(',') >> spaces? }
   rule(:left_brace) { spaces? >> str('{') >> spaces? }
   rule(:right_brace) { spaces? >> str('}') >> spaces? }
 
@@ -34,7 +36,13 @@ class Parser < Parslet::Parser
   }
 
   rule (:enum_declaration) {
-    (str('enum') >> spaces? >> identifier.maybe >> spaces? >> left_brace >> right_brace).as(:enum)
+    (str('enum') >> spaces? >> identifier.maybe >> spaces? >> left_brace >> enum_list.as(:values) >> right_brace).as(:enum)
+  }
+
+  rule (:enum_list) {
+    (
+     identifier >> comma.maybe
+    ).repeat
   }
 
   rule(:type_declaration) {
