@@ -30,7 +30,7 @@ class Parser < Parslet::Parser
   }
 
   rule(:typedef_declaration) {
-    str('typedef') >> spaces? >> identifier.as(:orig) >> spaces? >> identifier >> semicolon
+    str('typedef') >> spaces? >> type_declaration.as(:inner) >> spaces? >> identifier >> semicolon
   }
 
   rule (:enum_declaration) {
@@ -38,18 +38,16 @@ class Parser < Parslet::Parser
   }
 
   rule(:type_declaration) {
-    (
-     typedef_declaration |
-     enum_declaration
-    ).as(:type)
+    typedef_declaration |
+    enum_declaration |
+    identifier
   }
 
   rule(:statements) {
     (
      comment |
      (
-      type_declaration |
-      enum_declaration
+      type_declaration.as(:type)
     ) >> semicolon >> spaces?).repeat
   }
 
