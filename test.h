@@ -21,3 +21,7 @@ struct string {
 	int number;
 	char *ptr;
 };
+
+typedef struct {
+	int8_t this;
+} something ;
