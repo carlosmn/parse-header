@@ -59,6 +59,10 @@ class Parser < Parslet::Parser
     (enum_entry >> comma.maybe >> spaces?).repeat
   }
 
+  rule(:variable_declaration) {
+    identifier.as(:type) >> identifier >> (assign >> (semicolon.absent? >> any).repeat.as(:value)).maybe
+  }
+
   rule(:type_declaration) {
     typedef_declaration |
     enum_declaration |
@@ -68,9 +72,9 @@ class Parser < Parslet::Parser
   rule(:statements) {
     (
      comment |
-     (
-      type_declaration.as(:type)
-    ) >> semicolon >> spaces?).repeat
+     variable_declaration >> semicolon |
+     type_declaration.as(:type) >> semicolon
+    ).repeat
   }
 
   root :statements
