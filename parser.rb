@@ -63,12 +63,8 @@ class Parser < Parslet::Parser
     (str('struct') >> spaces? >> identifier.maybe >> spaces? >> left_brace >> struct_list.as(:values) >> right_brace).as(:struct)
   }
 
-  rule(:struct_entry) {
-    variable_declaration #>> (assign >> ((match('[,}]').absent? >> any).repeat).as(:value)).maybe
-  }
-
   rule (:struct_list) {
-    (struct_entry >> semicolon).repeat
+    (variable_declaration >> semicolon >> comment.maybe).repeat
   }
 
   rule(:variable_declaration) {
