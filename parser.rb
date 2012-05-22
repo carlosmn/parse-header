@@ -14,7 +14,6 @@ class Parser < Parslet::Parser
   rule(:alpha) { match('[a-zA-Z_]') }
   rule(:xdigit) { digit | match('[a-fA-F]') }
 
-  rule(:semicolon) { match('[\s*;\s*]') }
   rule(:equals) { spaces? >> str('=') >> spaces?}
 #  rule(:comma) { spaces? >> str(',') >> spaces? }
   rule(:left_brace) { spaces? >> str('{') >> spaces? }
@@ -27,7 +26,7 @@ class Parser < Parslet::Parser
   end
 
   symbols :ellipsis => '...',
-#  :semicolon => ';',
+  :semicolon => ';',
   :comma => ',',
   :colon => ':',
   :left_paren => '(',
@@ -81,7 +80,7 @@ class Parser < Parslet::Parser
   }
 
   rule(:typedef_declaration) {
-    str('typedef') >> spaces? >> type_declaration.as(:inner) >> spaces? >> identifier >> semicolon
+    str('typedef') >> spaces? >> type_declaration.as(:inner) >> spaces? >> identifier
   }
 
   rule (:enum_declaration) {
