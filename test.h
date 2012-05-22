@@ -3,7 +3,7 @@
 typedef uint64_t git_off_t;
 
 /** More documentation */
-enum something { SOME_ID, OTHER_ID };
+enum something { SOME_ID = 4, OTHER_ID };
 
 /** Typedef of an enum  */
-typedef enum boring {} interesting_t;
+typedef enum boring { BLAH } interesting_t;
