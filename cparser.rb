@@ -442,7 +442,7 @@ module CParser
     }
 
     rule(:enumerator_list) {
-      (enumerator >> comma.maybe).repeat
+      (comment | enumerator >> comma.maybe).repeat
     }
 
     rule(:enumerator) {
