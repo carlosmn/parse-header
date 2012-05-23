@@ -405,14 +405,16 @@ module CParser
       struct_or_union >> (
         (
           identifier.maybe >>
-          (left_brace >> struct_declaration_list >> right_brace)
+         # FIXME: The original doesn't work, and this work-around is suboptimal
+         (left_brace >> (right_brace.absent? >> any).repeat >> right_brace).as(:body)
+#          (left_brace >> struct_declaration_list >> right_brace)
         ) | identifier
       )
     }
 
     rule(:struct_or_union) { struct_keyword | union_keyword }
 
-    rule(:struct_declaration_list) { struct_declaration.repeat(1) }
+    rule(:struct_declaration_list) { struct_declaration.repeat(1).as(:struct) }
 
     rule(:struct_declaration) {
       specifier_qualifier_list >> struct_declarator_list >> semicolon
@@ -609,7 +611,7 @@ module CParser
 
     rule(:external_declaration) {
       function_definition.as(:function) |
-      declaration |
+      declaration.as(:decl) |
       comment
     }
 
