@@ -10,7 +10,7 @@ parser = CParser::Parser.new
 # Get rid of preprocessor directives
 contents.gsub! /(^#.*)/, ''
 # And transform GIT_EXTERN(type) -> type
-contents.gsub! /GIT_EXTERN\((.*)\)/, '\1'
+contents.gsub! /GIT_EXTERN\((.*?)\)/, '\1'
 contents.gsub! /GIT_BEGIN_DECL/, ''
 contents.gsub! /GIT_END_DECL/, ''
 #contents.strip!
